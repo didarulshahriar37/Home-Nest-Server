@@ -28,6 +28,20 @@ async function run () {
 
         const db = client.db("homeNest_db");
         const usersCollection = db.collection("users");
+        const agentsCollection = db.collection("agents");
+        const propertiesCollection = db.collection("properties");
+
+        app.get("/featured-properties", async(req, res) => {
+          const cursor = propertiesCollection.find().sort({postedDate: -1}).limit(6);
+          const result = await cursor.toArray();
+          res.send(result);
+        })
+
+        app.get("/agents", async(req, res) => {
+          const cursor = agentsCollection.find();
+          const result = await cursor.toArray();
+          res.send(result);
+        })
 
         app.post("/users", async(req, res) => {
           const newUser = req.body;
