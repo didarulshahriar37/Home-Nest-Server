@@ -31,6 +31,12 @@ async function run () {
         const agentsCollection = db.collection("agents");
         const propertiesCollection = db.collection("properties");
 
+        app.get("/all-properties", async(req, res) => {
+          const cursor = propertiesCollection.find();
+          const result = await cursor.toArray();
+          res.send(result);
+        })
+
         app.get("/featured-properties", async(req, res) => {
           const cursor = propertiesCollection.find().sort({postedDate: -1}).limit(6);
           const result = await cursor.toArray();
