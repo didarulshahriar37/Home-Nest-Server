@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 3000;
@@ -30,6 +30,17 @@ async function run() {
     const usersCollection = db.collection("users");
     const agentsCollection = db.collection("agents");
     const propertiesCollection = db.collection("properties");
+
+    app.patch("/all-properties/:id", async(req, res) => {
+      const id = req.params.id;
+      const updatedInfo = req.body;
+      const query = {_id: new ObjectId(id)};
+      const update = {
+        $set: updatedInfo
+      }
+      const result = await propertiesCollection.updateOne(query, update);
+      res.send(result);
+    })
 
     app.post("/all-properties", async (req, res) => {
       const newProperty = req.body;
