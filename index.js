@@ -31,11 +31,27 @@ async function run () {
         const agentsCollection = db.collection("agents");
         const propertiesCollection = db.collection("properties");
 
+        app.post("/all-properties", async(req, res) => {
+          const newProperty = req.body;
+          const result = await propertiesCollection.insertOne(newProperty);
+          res.send(result);
+        })
+
         app.get("/all-properties", async(req, res) => {
           const cursor = propertiesCollection.find();
           const result = await cursor.toArray();
           res.send(result);
         })
+
+        // app.get("/my-properties", async(req, res) => {
+
+        //   const query = {};
+        //   if(query.email === email){
+        //     query = 
+        //   }
+
+        //   const cursor = propertiesCollection.find();
+        // })
 
         app.get("/featured-properties", async(req, res) => {
           const cursor = propertiesCollection.find().sort({postedDate: -1}).limit(6);
