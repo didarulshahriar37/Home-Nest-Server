@@ -59,6 +59,13 @@ async function run() {
       res.send(result);
     })
 
+    app.delete("/all-properties/:id", async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await propertiesCollection.deleteOne(query);
+      res.send(result);
+    })
+
     app.get("/featured-properties", async (req, res) => {
       const cursor = propertiesCollection.find().sort({ postedDate: -1 }).limit(6);
       const result = await cursor.toArray();
