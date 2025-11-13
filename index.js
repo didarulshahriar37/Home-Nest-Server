@@ -30,11 +30,29 @@ async function run() {
     const usersCollection = db.collection("users");
     const agentsCollection = db.collection("agents");
     const propertiesCollection = db.collection("properties");
+    const reviewsCollection = db.collection("reviews");
 
-    app.patch("/all-properties/:id", async(req, res) => {
+    app.post("/reviews", async (req, res) => {
+      const newReview = req.body;
+      const result = await reviewsCollection.insertOne(newReview);
+      res.send(result);
+    })
+
+    app.get("/reviews", async (req, res) => {
+
+      const query = {};
+      if (req.query.email) {
+        query["postedBy.email"] = req.query.email;
+      }
+      const cursor = reviewsCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.patch("/all-properties/:id", async (req, res) => {
       const id = req.params.id;
       const updatedInfo = req.body;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const update = {
         $set: updatedInfo
       }
@@ -59,9 +77,9 @@ async function run() {
       res.send(result);
     })
 
-    app.delete("/all-properties/:id", async(req, res) => {
+    app.delete("/all-properties/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await propertiesCollection.deleteOne(query);
       res.send(result);
     })
